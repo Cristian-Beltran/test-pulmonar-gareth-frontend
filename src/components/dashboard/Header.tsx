@@ -1,5 +1,5 @@
-import type React from "react";
-import { Menu } from "lucide-react";
+import React from "react";
+import { Activity, BadgeCheck, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/auth/useAuth";
 
@@ -7,45 +7,68 @@ interface HeaderProps {
   onMenuClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
+export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const { user } = useAuthStore();
 
+  const initials = React.useMemo(() => {
+    const name = user?.fullname ?? "Usuario";
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (
+      parts[0].charAt(0) + parts[parts.length - 1].charAt(0)
+    ).toUpperCase();
+  }, [user?.fullname]);
+
   return (
-    <header className="bg-card border-b border-border px-6 py-4">
-      <div className="flex items-center justify-between">
-        {/* Left Section */}
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onMenuClick}
-            className="lg:hidden"
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
+    <header className="sticky top-0 z-30 border-b border-border bg-gradient-to-r from-primary/15 via-primary/10 to-transparent backdrop-blur supports-[backdrop-filter]:bg-background/70">
+      <div className="px-4 sm:px-6 py-3">
+        <div className="flex items-center justify-between gap-4">
+          {/* Left */}
+          <div className="flex items-center gap-3 min-w-0">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onMenuClick}
+              className="lg:hidden shrink-0"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
 
-          <div className="hidden md:block">
-            <h1 className="text-xl font-semibold text-card-foreground">
-              Bienvenido, {user?.fullname}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Sistema de Distribución Médica
-            </p>
-          </div>
-        </div>
-
-        {/* Right Section */}
-        <div className="flex items-center gap-2">
-          <div className="hidden sm:flex items-center gap-2 ml-4">
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-sm font-medium text-primary-foreground">
-                {user?.fullname?.charAt(0) || "U"}
-              </span>
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="p-2 rounded-xl bg-primary/15 text-primary">
+                <Activity className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="text-base sm:text-lg font-semibold text-card-foreground truncate">
+                    Bienvenido, {user?.fullname ?? "Usuario"}
+                  </h1>
+                  <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                    <BadgeCheck className="h-3.5 w-3.5" />
+                    PulmoBiofeedback
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">
+                  Sistema de Test Pulmonar con Biofeedback en tiempo real
+                </p>
+              </div>
             </div>
-            <div className="hidden lg:block">
-              <p className="text-sm font-medium text-card-foreground">
-                {user?.fullname}
-              </p>
+          </div>
+
+          {/* Right */}
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-3">
+              <div className="h-9 w-9 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-sm">
+                <span className="text-sm font-semibold">{initials}</span>
+              </div>
+              <div className="hidden lg:flex flex-col leading-tight">
+                <span className="text-sm font-medium text-card-foreground">
+                  {user?.fullname ?? "Usuario"}
+                </span>
+                <span className="text-[11px] text-muted-foreground">
+                  Conectado
+                </span>
+              </div>
             </div>
           </div>
         </div>
