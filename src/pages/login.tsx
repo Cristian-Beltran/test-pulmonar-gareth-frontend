@@ -1,6 +1,3 @@
-// ==============================
-// PARTE 1 — AuthHero.tsx (branding, sin dependencias de layout externo)
-// ==============================
 import type React from "react";
 import { Wind } from "lucide-react";
 
